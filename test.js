@@ -308,7 +308,7 @@ const urlList = ['https://www.adams.edu/',
                 'https://www.morgancc.edu/express/',
                 'https://www.morgancc.edu/foundation/',
                 'https://www.morgancc.edu/newsroom/',
-                'https://www.morgancc.edu/promise/',
+                'https://www.morgancc.edu/what-we-offer/high-school-options/',
                 'https://www.morgancc.edu/summer/',
                 'https://www.naropa.edu/',
                 'https://www.naropa.edu/academic-affairs/',
@@ -541,24 +541,22 @@ const urlList = ['https://www.adams.edu/',
                 'https://western.edu/program/marketing/',
                 'https://western.edu/program/printmaking/'];
 
-const numberElements = [];
-const areaPixels = [];
-
 async function getDimensions(lst) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     for (let i = 0; i < lst.length; i++)
     {
-        await page.goto(lst[i]);
-        numberElements.push(await page.$$('*').length);
+        await page.goto(lst[i], { waitUntil: 'networkidle0', timeout: 0 });
+        //const numberElements = await page.$$('*').length;
+        const numberElements = await page.evaluate(() => document.getElementsByTagName('*').length)
         const height = await page.evaluate(() => document.body.scrollHeight);
         const width = await page.evaluate(() => document.body.scrollWidth);
-        areaPixels.push(width * height);
-        console.log(height);
+        const areaPixels = (width * height);
+        console.log(lst[i]);
+        console.log(numberElements);
+        console.log(areaPixels);
     }
 
-    console.log(numberElements);
-    console.log(areaPixels);
     await browser.close();
 }
 
